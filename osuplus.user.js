@@ -3914,7 +3914,7 @@
         }
 
         function addMirrors(){
-            if(settings.showMiror){
+            if(settings.showMirror){
                 makeMirror(`https://beatconnect.io/b/${jsonBeatmapset.id}`, "Beatconnect", null, false);
             }
             if(settings.showMirror2){
