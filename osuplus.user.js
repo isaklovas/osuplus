@@ -3899,18 +3899,23 @@
         }
 
         function makeExternalButton(url, topName, bottomName, newTab){
-            var mirror = `<a href="${url}" ${newTab ? "target='_blank'" : ""} data-turbolinks="false" class="btn-osu-big btn-osu-big--beatmapset-header js-beatmapset-download-link">
-                <span class="btn-osu-big__content ">
-                <span class="btn-osu-big__left">
-                <span class="btn-osu-big__text-top">${topName}</span>
-                ${bottomName === null ? "" : `<span class="btn-osu-big__text-bottom">${bottomName}</span>`}
-                </span><span class="btn-osu-big__icon">
-                <span class="fa-fw"><i class="fas fa-star"></i></span></span></span></a>`;
-            if($(".beatmapset-header__more").length > 0){
-                $(".beatmapset-header__more").before(mirror);
-            }else{
-                $(".beatmapset-header__buttons").append(mirror);
+            var mapsetURL = window.location.href;
+            if (mapsetURL.includes("beatmapsets") && mapsetURL.includes("#") && !mapsetURL.includes("#taiko") && !mapsetURL.includes("#fruits") && !mapsetURL.includes("#mania") && (jsonBeatmapset.status == "ranked" || jsonBeatmapset.status == "approved" || jsonBeatmapset.status == "loved")) {
+                var mirror = `<a href="${url}" ${newTab ? "target='_blank'" : ""} data-turbolinks="false" class="btn-osu-big btn-osu-big--beatmapset-header js-beatmapset-download-link">
+                    <span class="btn-osu-big__content ">
+                    <span class="btn-osu-big__left">
+                    <span class="btn-osu-big__text-top">${topName}</span>
+                    ${bottomName === null ? "" : `<span class="btn-osu-big__text-bottom">${bottomName}</span>`}
+                    </span><span class="btn-osu-big__icon">
+                    <span class="fa-fw"><i class="fas fa-link"></i></span></span></span></a>`;
+                if($(".beatmapset-header__more").length > 0){
+                    $(".beatmapset-header__more").before(mirror);
+                }else{
+                    $(".beatmapset-header__buttons").append(mirror);
+                }
             }
+
+
         }
 
         function addMirrors(){
