@@ -197,6 +197,7 @@
         showMirror2: false,
         showMirror3: false,
         showMirror4: false,
+        showOMDB: true,
         //showSubscribeMap: false,
         apikey: null,
         failedChecked: true,
@@ -447,6 +448,7 @@
                             makeSettingRow("Show Sayobot mirror", null, makeCheckboxOption("showMirror2")),
                             makeSettingRow("Show NeriNyan mirror", null, makeCheckboxOption("showMirror3")),
                             makeSettingRow("Show Chimu.moe mirror", null, makeCheckboxOption("showMirror4")),
+                            makeSettingRow("Show OMDB", null, makeCheckboxOption("showOMDB")),
                             makeSettingRow("Show dates", null, makeCheckboxOption("showDates")),
                             makeSettingRow("Show pp rank beside player", "scores may take longer to load", makeCheckboxOption("showPpRank")),
                             makeSettingRow("Fetch player countries outside top 50", "disable to load faster, but some players' countries won't be loaded", makeCheckboxOption("fetchPlayerCountries")),
@@ -487,7 +489,7 @@
                 $("<button id='osuplusSettingsSaveBtn'>Save</button>").click(function(){
                     GMX.setValue("apikey", $("#settings-apikey").val());
                     var properties = [
-                        "showMirror", "showMirror2", "showMirror3", "showMirror4", "showDates", "showPpRank", "fetchPlayerCountries", "showTop100", "pp2dp", "failedChecked", 
+                        "showMirror", "showMirror2", "showMirror3", "showMirror4", "showOMDB", "showDates", "showPpRank", "fetchPlayerCountries", "showTop100", "pp2dp", "failedChecked", 
                         "showDetailedHitCount", "showHitsPerPlay", "fetchUserpageMaxCombo", "fetchFirstsInfo", "rankingVisible", "forceShowDifficulties", "showSiteSwitcher", 
                         "showMpGrades", "showRecent"
                     ];
@@ -2404,6 +2406,7 @@
             songInfoRef.children().children().eq(2).children().eq(5).append("<br>", maxcomboSpan);
 
             addMirrors();
+            addOMDB();
             showMapValues();
             addOsuPreview();
 
@@ -3269,6 +3272,7 @@
 
             beatmapWaiter = waitForEl(".beatmapset-beatmap-picker", function(el){
                 addMirrors();
+                addOMDB();
                 refreshBeatmapsetHeader();
                 beatmapObserver = whenBeatmapChange(() => {
                     refreshBeatmapsetHeader();
@@ -3894,8 +3898,23 @@
             }
         }
 
+        function makeExternalButton(url, topName, bottomName, newTab){
+            var mirror = `<a href="${url}" ${newTab ? "target='_blank'" : ""} data-turbolinks="false" class="btn-osu-big btn-osu-big--beatmapset-header js-beatmapset-download-link">
+                <span class="btn-osu-big__content ">
+                <span class="btn-osu-big__left">
+                <span class="btn-osu-big__text-top">${topName}</span>
+                ${bottomName === null ? "" : `<span class="btn-osu-big__text-bottom">${bottomName}</span>`}
+                </span><span class="btn-osu-big__icon">
+                <span class="fa-fw"><i class="fas fa-star"></i></span></span></span></a>`;
+            if($(".beatmapset-header__more").length > 0){
+                $(".beatmapset-header__more").before(mirror);
+            }else{
+                $(".beatmapset-header__buttons").append(mirror);
+            }
+        }
+
         function addMirrors(){
-            if(settings.showMirror){
+            if(settings.showMiror){
                 makeMirror(`https://beatconnect.io/b/${jsonBeatmapset.id}`, "Beatconnect", null, false);
             }
             if(settings.showMirror2){
@@ -3908,6 +3927,13 @@
             }
             if(settings.showMirror4){
                 makeMirror(`https://api.chimu.moe/v1/download/${jsonBeatmapset.id}?n=1`, "Chimu.moe", null, false);
+                
+            }
+        }
+        
+        function addOMDB(){
+            if(settings.showOMDB){
+                makeExternalButton(`https://omdb.nyahh.net/mapset/${jsonBeatmapset.id}`, "OMDB", null, true);
             }
         }
 
