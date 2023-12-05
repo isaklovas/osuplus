@@ -3900,7 +3900,7 @@
 
         function makeExternalButton(url, topName, bottomName, newTab){
             var mapsetURL = window.location.href;
-            if (mapsetURL.includes("beatmapsets") && mapsetURL.includes("#") && !mapsetURL.includes("#taiko") && !mapsetURL.includes("#fruits") && !mapsetURL.includes("#mania") && (jsonBeatmapset.status == "ranked" || jsonBeatmapset.status == "approved" || jsonBeatmapset.status == "loved")) {
+            if (mapsetURL.includes("beatmapsets") && mapsetURL.includes("#") && !mapsetURL.includes("#taiko") && !mapsetURL.includes("#fruits") && !mapsetURL.includes("#mania") && (jsonBeatmapset.status == "ranked" || jsonBeatmapset.status == "approved" || jsonBeatmapset.status == "loved" || jsonBeatmapset.status == "graveyard")) {
                 var mirror = `<a href="${url}" ${newTab ? "target='_blank'" : ""} data-turbolinks="false" class="btn-osu-big btn-osu-big--beatmapset-header js-beatmapset-download-link">
                     <span class="btn-osu-big__content ">
                     <span class="btn-osu-big__left">
@@ -3914,8 +3914,6 @@
                     $(".beatmapset-header__buttons").append(mirror);
                 }
             }
-
-
         }
 
         function addMirrors(){
@@ -3935,10 +3933,25 @@
                 
             }
         }
-        
+
         function addOMDB(){
             if(settings.showOMDB){
-                makeExternalButton(`https://omdb.nyahh.net/mapset/${jsonBeatmapset.id}`, "OMDB", null, true);
+                var url = `https://omdb.nyahh.net/mapset/${jsonBeatmapset.id}`;
+                if (jsonBeatmapset.status == "ranked" || jsonBeatmapset.status == "approved" || jsonBeatmapset.status == "loved") {
+                    makeExternalButton(url, "OMDB", null, true);
+                } else {
+                    requestLimiter.makeRequest({
+                        method: "GET",
+                        url: url,
+                        synchronous: false,
+                        timeout: 0,
+                        onload: function(response) {
+                            if (response.status === 200) {
+                                makeExternalButton(url, "OMDB", null, true);
+                            }
+                        }
+                    })
+                }
             }
         }
 
